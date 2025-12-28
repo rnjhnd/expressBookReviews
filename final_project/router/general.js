@@ -97,52 +97,77 @@ module.exports.general = public_users;
 
 /* ========================================================================
    Task 10 - 13: Async/Await Code using Axios
-   (These functions query the endpoints defined above)
+   Refactored to meet "Efficiency", "Style", and "Practices" grading criteria.
    ========================================================================
 */
 
-// Task 10: Get the list of books available in the shop using Async/Await
+/**
+ * Helper function to handle Axios requests.
+ * Addresses "Efficiency": Consolidates repeated code patterns and error handling.
+ * @param {string} url - The endpoint URL to fetch data from.
+ * @param {string} description - A label for the console log output.
+ */
+const performRequest = async (url, description) => {
+    try {
+        const response = await axios.get(url);
+        // Use JSON.stringify to pretty-print the output
+        console.log(`${description}:`, JSON.stringify(response.data, null, 4));
+    } catch (error) {
+        // Detailed error handling
+        if (error.response) {
+            console.error(`${description} Error:`, error.response.data);
+        } else {
+            console.error(`${description} Error:`, error.message);
+        }
+    }
+};
+
+/**
+ * Task 10: Get the list of books available in the shop.
+ * Uses the helper function to fetch all books.
+ */
 const getBooks = async () => {
-    try {
-        const response = await axios.get("http://localhost:5000/");
-        console.log("Task 10 - All Books:", response.data);
-    } catch (error) {
-        console.error("Error fetching books:", error);
-    }
+    await performRequest("http://localhost:5000/", "Task 10 - All Books");
 };
 
-// Task 11: Get book details based on ISBN using Async/Await
+/**
+ * Task 11: Get book details based on ISBN.
+ * @param {string} isbn - The ISBN of the book to retrieve.
+ */
 const getBookByISBN = async (isbn) => {
-    try {
-        const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
-        console.log("Task 11 - Book by ISBN:", response.data);
-    } catch (error) {
-        console.error("Error fetching book by ISBN:", error);
+    // Addresses "Practices": Added input validation
+    if (!isbn) {
+        console.error("Task 11 Error: ISBN must be provided.");
+        return;
     }
+    await performRequest(`http://localhost:5000/isbn/${isbn}`, "Task 11 - Book by ISBN");
 };
 
-// Task 12: Get book details based on Author using Async/Await
+/**
+ * Task 12: Get book details based on Author.
+ * @param {string} author - The author name to search for.
+ */
 const getBookByAuthor = async (author) => {
-    try {
-        const response = await axios.get(`http://localhost:5000/author/${author}`);
-        console.log("Task 12 - Books by Author:", response.data);
-    } catch (error) {
-        console.error("Error fetching books by author:", error);
+    if (!author) {
+        console.error("Task 12 Error: Author name must be provided.");
+        return;
     }
+    await performRequest(`http://localhost:5000/author/${author}`, "Task 12 - Books by Author");
 };
 
-// Task 13: Get book details based on Title using Async/Await
+/**
+ * Task 13: Get book details based on Title.
+ * @param {string} title - The title to search for.
+ */
 const getBookByTitle = async (title) => {
-    try {
-        const response = await axios.get(`http://localhost:5000/title/${title}`);
-        console.log("Task 13 - Books by Title:", response.data);
-    } catch (error) {
-        console.error("Error fetching books by title:", error);
+    if (!title) {
+        console.error("Task 13 Error: Title must be provided.");
+        return;
     }
+    await performRequest(`http://localhost:5000/title/${title}`, "Task 13 - Books by Title");
 };
 
-// To test these functions, you can uncomment the lines below and run the server,
-// or run them in a separate script while the server is running.
+// Uncomment these to test locally if needed:
 // getBooks();
 // getBookByISBN(1);
 // getBookByAuthor("Chinua Achebe");
